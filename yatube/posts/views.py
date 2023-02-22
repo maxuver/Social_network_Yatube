@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.cache import cache_page
+from .utils import get_page_context
 
 from .forms import CommentForm, PostForm
 from .models import Follow, Group, Post
@@ -13,50 +14,40 @@ User = get_user_model()
 
 @cache_page(20)
 def index(request):
-    paginator = Paginator(
-        Post.objects.all(),
-        settings.NUMBER_POST
-    )
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    post_list = Post.objects.all()
     template = 'posts/index.html'
     context = {
-        'page_obj': page_obj,
+        'page_obj': get_page_context(post_list, request),
     }
     return render(request, template, context)
 
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    paginator = Paginator(
-        group.posts.all(),
-        settings.NUMBER_POST
-    )
-    page_obj = paginator.get_page(
-        request.GET.get('page')
-    )
+    post_list = group.posts.all()
     template = 'posts/group_list.html'
-    context = {'group': group, 'page_obj': page_obj}
+    context = {
+        'group': group,
+        'page_obj': get_page_context(post_list, request),
+    }
     return render(request, template, context)
 
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    paginator = Paginator(
-        author.posts.all(),
-        settings.NUMBER_POST
-    )
-    page_obj = paginator.get_page(
-        request.GET.get('page')
-    )
-    following = request.user.is_authenticated
-    if following:
-        following = author.following.filter(user=request.user).exists()
+    post_list = Post.objects.filter(author=author)
     template = 'posts/profile.html'
     context = {
-        'page_obj': page_obj,
+        'page_obj': get_page_context(post_list, request),
+        'author': author
+    }
+    check_login_or_not = request.user.is_authenticated
+    if check_login_or_not:
+        check_login_or_not = author.check_login_or_not.filter(user=request.user).exists()
+    template = 'posts/profile.html'
+    context = {
         'author': author,
-        'following': following
+        'check_login_or_not': check_login_or_not
     }
     return render(request, template, context)
 
@@ -122,7 +113,7 @@ def post_edit(request, post_id):
 @login_required
 def follow_index(request):
     posts = Post.objects.filter(
-        author__following__user=request.user)
+        author__check_login_or_not__user=request.user)
     paginator = Paginator(posts, settings.NUMBER_POST)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
