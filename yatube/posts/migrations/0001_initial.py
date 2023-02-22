@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('text', models.TextField(verbose_name='Коментарий')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Создан')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='Обнавлен')),
+                ('updated', models.DateTimeField(auto_now=True, verbose_name='Обновлён')),
                 ('active', models.BooleanField(default=True, verbose_name='Активен')),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to=settings.AUTH_USER_MODEL, verbose_name='Автор')),
                 ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='posts.post', verbose_name='Пост')),

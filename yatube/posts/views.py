@@ -11,6 +11,8 @@ from .models import Follow, Group, Post
 
 User = get_user_model()
 
+WORDS_LIMIT_IN_CAPTION = 30
+
 
 @cache_page(20)
 def index(request):
@@ -43,7 +45,8 @@ def profile(request, username):
     }
     check_login_or_not = request.user.is_authenticated
     if check_login_or_not:
-        check_login_or_not = author.check_login_or_not.filter(user=request.user).exists()
+        check_login_or_not = author.check_login_or_not.filter(
+            user=request.user).exists()
     template = 'posts/profile.html'
     context = {
         'author': author,
@@ -54,16 +57,14 @@ def profile(request, username):
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    comments = post.comments.all()
-    form = CommentForm()
-    template = 'posts/post_detail.html'
+    form = CommentForm(request.POST or None)
+    title = f'Пост {post.text[:WORDS_LIMIT_IN_CAPTION]}'
     context = {
-        'post': post,
-        'requser': request.user,
-        'comments': comments,
         'form': form,
+        'post': post,
+        'title': title
     }
-    return render(request, template, context)
+    return render(request, 'posts/post_detail.html', context)
 
 
 @login_required
