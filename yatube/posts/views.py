@@ -36,20 +36,16 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
+    check_login_or_not = request.user.is_authenticated
     author = get_object_or_404(User, username=username)
     post_list = Post.objects.filter(author=author)
     template = 'posts/profile.html'
-    context = {
-        'page_obj': get_page_context(post_list, request),
-        #'page_obj': get_page_context(post_list, request),
-        #'author': author
-    }
-    check_login_or_not = request.user.is_authenticated
     if check_login_or_not:
         check_login_or_not = author.check_login_or_not.filter(
             user=request.user).exists()
     template = 'posts/profile.html'
     context = {
+        'page_obj': get_page_context(post_list, request),
         'author': author,
         'check_login_or_not': check_login_or_not
     }
