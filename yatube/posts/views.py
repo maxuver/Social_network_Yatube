@@ -41,7 +41,8 @@ def profile(request, username):
     template = 'posts/profile.html'
     context = {
         'page_obj': get_page_context(post_list, request),
-        'author': author
+        #'page_obj': get_page_context(post_list, request),
+        #'author': author
     }
     check_login_or_not = request.user.is_authenticated
     if check_login_or_not:
@@ -114,12 +115,11 @@ def post_edit(request, post_id):
 @login_required
 def follow_index(request):
     posts = Post.objects.filter(
-        author__check_login_or_not__user=request.user)
-    paginator = Paginator(posts, settings.NUMBER_POST)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    context = {'page_obj': page_obj}
-    return render(request, 'posts/follow.html', context)
+        author__check_login_or_not__user=request.user
+    ).select_related('author', 'group')
+    page_obj: get_page_context(posts, request)
+    return render(request, 'posts/follow.html',
+                  {'page_obj': get_page_context(posts, request)})
 
 
 @login_required
