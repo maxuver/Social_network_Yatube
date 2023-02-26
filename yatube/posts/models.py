@@ -110,7 +110,7 @@ class Follow(models.Model):
         User,
         on_delete=models.CASCADE,
         verbose_name='Автор',
-        related_name='following'
+        related_name='check_login_or_not'
     )
 
     def __str__(self):
