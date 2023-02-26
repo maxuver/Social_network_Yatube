@@ -34,18 +34,18 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
-    following = request.user.is_authenticated
+    check_login_or_not = request.user.is_authenticated
     author = get_object_or_404(User, username=username)
     post_list = Post.objects.filter(author=author)
     template = 'posts/profile.html'
-    if following:
-        following = author.following.filter(
+    if check_login_or_not:
+        check_login_or_not = author.check_login_or_not.filter(
             user=request.user).exists()
     template = 'posts/profile.html'
     context = {
         'page_obj': get_page_context(post_list, request),
         'author': author,
-        'following': following
+        'check_login_or_not': check_login_or_not
     }
     return render(request, template, context)
 
@@ -109,7 +109,7 @@ def post_edit(request, post_id):
 @login_required
 def follow_index(request):
     posts = Post.objects.filter(
-        author__following__user=request.user
+        author__check_login_or_not__user=request.user
     ).select_related('author', 'group')
     page_obj: get_page_context(posts, request)
     return render(request, 'posts/follow.html',
