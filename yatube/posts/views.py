@@ -10,9 +10,9 @@ from .models import Follow, Group, Post
 User = get_user_model()
 
 WORDS_LIMIT_IN_CAPTION = 30
+СACHE_PAGE = 20
 
-
-@cache_page(20)
+@cache_page(СACHE_PAGE)
 def index(request):
     post_list = Post.objects.all()
     template = 'posts/index.html'
@@ -34,18 +34,18 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
-    following = request.user.is_authenticated
+    is_auth_following = request.user.is_authenticated
     author = get_object_or_404(User, username=username)
     post_list = Post.objects.filter(author=author)
     template = 'posts/profile.html'
-    if following:
-        following = author.following.filter(
+    if is_auth_following:
+        is_auth_following = author.is_auth_following.filter(
             user=request.user).exists()
     template = 'posts/profile.html'
     context = {
         'page_obj': get_page_context(post_list, request),
         'author': author,
-        'following': following
+        'is_auth_following': is_auth_following
     }
     return render(request, template, context)
 
@@ -109,7 +109,7 @@ def post_edit(request, post_id):
 @login_required
 def follow_index(request):
     posts = Post.objects.filter(
-        author__following__user=request.user
+        author__is_auth_following__user=request.user
     ).select_related('author', 'group')
     page_obj: get_page_context(posts, request)
     return render(request, 'posts/follow.html',
