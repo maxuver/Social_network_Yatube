@@ -18,7 +18,7 @@
       <li class="nav-item">
         <a class="nav-link {% if view_name == 'about:tech' %}active{% endif %}" href="{% url 'about:tech' %}">Технологии</a>
       </li>
-      {% if user.is_authenticated %}
+      {% if user.is_auth_following %}
       <li class="nav-item"> 
         <a class="nav-link {% if view_name == 'posts:create' %}active{% endif %}" href="{% url 'posts:create' %}">Новая запись</a>
       </li>
