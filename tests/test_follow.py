@@ -39,7 +39,7 @@ class TestFollow:
     @pytest.mark.parametrize('field_name', ['author', 'user'])
     def test_follow(self, field_name):
         model_name = 'Follow'
-        related_name = 'follower' if field_name == 'user' else 'is_auth_following'
+        related_name = 'follower' if field_name == 'user' else 'following'
         checking_field = search_field(Follow._meta.fields, field_name)
         field_in_model_text = (f'Поле `{field_name}` в модели `{model_name}`')
         assert checking_field is not None, (
@@ -56,7 +56,7 @@ class TestFollow:
         )
         assert checking_field.remote_field.related_name == related_name, (
             f'{field_in_model_text} должно при объявлении содержать '
-            f'`following=\'{related_name}\'`'
+            f'`related_name\'{related_name}\'`'
         )
         assert not checking_field.unique, (
             f'{field_in_model_text} '
