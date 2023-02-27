@@ -40,7 +40,7 @@ def profile(request, username):
     post_list = Post.objects.filter(author=author)
     template = 'posts/profile.html'
     if is_auth_following:
-        is_auth_following = author.is_auth_following.filter(
+        is_auth_following = author.following.filter(
             user=request.user).exists()
     template = 'posts/profile.html'
     context = {
