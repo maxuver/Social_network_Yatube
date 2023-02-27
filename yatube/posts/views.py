@@ -12,6 +12,7 @@ User = get_user_model()
 WORDS_LIMIT_IN_CAPTION = 30
 СACHE_PAGE = 20
 
+
 @cache_page(СACHE_PAGE)
 def index(request):
     post_list = Post.objects.all()
