@@ -110,7 +110,7 @@ def post_edit(request, post_id):
 @login_required
 def follow_index(request):
     posts = Post.objects.filter(
-        author__is_auth_following__user=request.user
+        author__following__user=request.user
     ).select_related('author', 'group')
     page_obj: get_page_context(posts, request)
     return render(request, 'posts/follow.html',
