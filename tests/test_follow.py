@@ -56,7 +56,7 @@ class TestFollow:
         )
         assert checking_field.remote_field.related_name == related_name, (
             f'{field_in_model_text} должно при объявлении содержать '
-            f'`related_name=\'{related_name}\'`'
+            f'`following=\'{related_name}\'`'
         )
         assert not checking_field.unique, (
             f'{field_in_model_text} '
