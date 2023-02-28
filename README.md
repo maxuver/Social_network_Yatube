@@ -23,7 +23,7 @@ YaTube/yatube/posts/tests/
 Clone the repository and go to it on the command line:
 
 ```
-git clone https://github.com/maxuver/hw05_final.git
+git clone https://github.com/maxuver/Social_network_Yatube.git
 ```
 
 ```
